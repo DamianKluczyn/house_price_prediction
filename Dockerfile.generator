@@ -2,10 +2,10 @@
 FROM python:3.8-slim
 
 # Instalacja dodatkowych pakietów Pythona
-RUN pip install pandas faker dask distributed
+RUN pip install pandas faker dask
 
 # Kopiowanie skryptu do kontenera
-COPY data_generator.py /opt/dask/scripts/data_generator.py
+COPY scripts/data_generator.py /opt/dask/scripts/data_generator.py
 
 # Ustawienie punktu wejściowego
 ENTRYPOINT ["python", "/opt/dask/scripts/data_generator.py"]

@@ -1,6 +1,6 @@
 FROM daskdev/dask:latest
 
-RUN pip install pandas scikit-learn joblib
+RUN pip install pandas scikit-learn joblib dask-ml
 
 COPY scripts/stream_data.py /opt/dask/scripts/stream_data.py
 

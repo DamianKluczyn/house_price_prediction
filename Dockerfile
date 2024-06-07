@@ -2,7 +2,7 @@
 FROM daskdev/dask:latest
 
 # Instalacja dodatkowych pakietów Pythona
-RUN pip install pandas scikit-learn joblib
+RUN pip install pandas scikit-learn joblib dask-ml
 
 # Kopiowanie skryptu do kontenera
 COPY scripts/train_model.py /opt/dask/scripts/train_model.py

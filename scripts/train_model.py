@@ -1,5 +1,3 @@
-# scripts/train_model.py
-
 import dask.dataframe as dd
 from dask_ml.model_selection import train_test_split
 from dask_ml.preprocessing import StandardScaler, OneHotEncoder
@@ -12,15 +10,15 @@ import joblib
 df = dd.read_csv('/opt/dask/data/housing.csv')
 
 # Przetwarzanie danych
-df = df.categorize(columns=['oceanProximity'])
+df = df.categorize(columns=['ocean_proximity'])
 df = df.dropna()
 
 # Podział na cechy i etykiety
-X = df.drop(columns='medianHouseValue')
-y = df['medianHouseValue']
+X = df.drop(columns='median_house_value')
+y = df['median_house_value']
 
 # Kodowanie cech kategorycznych
-encoder = OneHotEncoder(sparse=False)
+encoder = OneHotEncoder()
 X = encoder.fit_transform(X)
 
 # Skalowanie cech
