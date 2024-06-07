@@ -1,0 +1,7 @@
+FROM daskdev/dask:latest
+
+RUN pip install pandas scikit-learn joblib
+
+COPY scripts/stream_data.py /opt/dask/scripts/stream_data.py
+
+ENTRYPOINT ["python", "/opt/dask/scripts/stream_data.py"]
