@@ -4,20 +4,14 @@ import warnings
 import joblib
 from typing import Generator, Tuple, Any
 from streamz import Stream
-from dask_ml.linear_model import LinearRegression
 from dask.dataframe import read_csv, DataFrame
-
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
 
-def load_model() -> LinearRegression:
-    return joblib.load("../model/model.joblib")
-
-
+# Funkcja do generowania strumienia danych
 def generate_stream_data() -> Generator[Tuple[DataFrame], None, None]:
-    file = read_csv("../data/housing.csv")
-    data = file.to_dask_array(lengths=True)
+    data = read_csv("./data/housing.csv").to_dask_array(lengths=True)
     data = data[:, 0:-1]
 
     indices = np.random.choice(len(data), size=10, replace=False)
@@ -27,29 +21,35 @@ def generate_stream_data() -> Generator[Tuple[DataFrame], None, None]:
         yield row.reshape(1, -1)
 
 
+# Funkcja do procesowania danych strumieniowych
 def process_stream_data(data) -> Tuple[np.ndarray, Any]:
-    model = load_model()
+    model = joblib.load("./data/model.joblib")
     prediction = model.predict(data).compute()
     return data, prediction
 
 
-def save_predictions(predictions) -> None:
-    with open("pred.csv", 'a+') as f:
+# Funkcja do zapisu predykcji
+def save_predictions(predictions):
+    with open("./data/pred.csv", 'a+') as f:
         for data, prediction in predictions:
             data_values = data.compute().flatten().tolist()
             f.write(f"{data_values},{prediction}\n")
 
 
 if __name__ == '__main__':
-    stream = Stream()
-    predictions = []
+    while True:
+        stream = Stream()
+        predictions = []
 
-    stream.map(process_stream_data).sink(lambda x: predictions.append(x))
+        stream.map(process_stream_data).sink(lambda x: predictions.append(x))
 
-    data_generator = generate_stream_data()
+        data_generator = generate_stream_data()
 
-    for new_data in data_generator:
-        stream.emit(new_data)
+        for new_data in data_generator:
+            stream.emit(new_data)
+            time.sleep(1)
+
+        print("Saving predictions")
+        save_predictions(predictions)
+
         time.sleep(1)
-
-    save_predictions(predictions)

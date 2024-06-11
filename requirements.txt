@@ -1,6 +1,5 @@
+numpy
 dask~=2024.5.0
-joblib~=1.4.2
-schedule~=1.2.2
-numpy~=1.26.4
-streamz~=0.6.4
 dask-ml
+joblib~=1.4.2
+streamz~=0.6.4
