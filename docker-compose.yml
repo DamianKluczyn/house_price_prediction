@@ -1,39 +1,14 @@
 services:
-  dask-scheduler:
-    image: daskdev/dask:latest
-    command: dask-scheduler
-    ports:
-      - "8786:8786"
-      - "8787:8787"
-
-  dask-worker:
-    image: daskdev/dask:latest
-    command: dask-worker --nthreads 2 --no-bokeh --memory-limit 2GB dask-scheduler:8786
-    depends_on:
-      - dask-scheduler
-
-  dask-train:
+  train:
     build:
       context: .
-      dockerfile: Dockerfile
-    depends_on:
-      - dask-scheduler
-      - dask-worker
-
-  data-generator:
-    build:
-      context: .
-      dockerfile: Dockerfile.generator
+      dockerfile: Dockerfile_train
     volumes:
-      - ./data:/opt/dask/data
+      - ./data:/house_price_prediction/data
 
-  dask-stream:
+  predict:
     build:
       context: .
-      dockerfile: Dockerfile.stream
-    depends_on:
-      - dask-scheduler
-      - dask-worker
-      - data-generator
+      dockerfile: Dockerfile_stream
     volumes:
-      - ./data:/opt/dask/data
+      - ./data:/house_price_prediction/data
